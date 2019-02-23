@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<properties resource="JDBCutils.properties"></properties>
+
+	<settings>
+	<setting name="logImpl" value="LOG4J"></setting>
+	</settings>
+	<typeAliases>
+		<package name="com.baizhi.entity"/>
+	</typeAliases>
+
+
+	<!-- 配置MyBatis运行参数，运行环境 -->
+	<environments default="oracle">
+		<environment id="oracle">
+			<!-- 由MyBatis管理事务 -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 数据源，连接池，配置数据库基本四项 由MyBatis来管理连接池 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.driver}"></property>
+				<property name="url" value="${jdbc.url}"></property>
+				<property name="username" value="${jdbc.username}"></property>
+				<property name="password" value="${jdbc.password}"></property>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	
+	
+	
+	<!-- 注册mapper文件   示例
+	<mappers>
+		<mapper resource="com/baizhi/dao/UserDaoMapper.xml"></mapper>
+	</mappers>
+	-->
+	<mappers>
+		<mapper resource="com/baizhi/dao/BookDaoMapper.xml"/>
+		<mapper resource="com/baizhi/dao/CategoryDaoMapper.xml"/>
+		<mapper resource="com/baizhi/dao/UserDaoMapper.xml"/>
+		<mapper resource="com/baizhi/dao/AddressDaoMapper.xml"/>
+		<mapper resource="com/baizhi/dao/OrderDaoMapper.xml"/>
+		<mapper resource="com/baizhi/dao/ItemdetailDaoMapper.xml"/>
+		
+	</mappers>
+	
+	
+</configuration>

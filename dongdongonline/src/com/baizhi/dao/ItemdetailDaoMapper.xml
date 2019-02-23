@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.ItemdetailDao">
+     <insert id="add" parameterType="itemdetail">
+     
+      insert into t_item values(myseq.nextval,#{item_count},#{item_price},#{book.book_id},#{order_id})
+     
+     </insert>
+    <delete id="delete" parameterType="int">
+    	delete t_item where order_id=#{0}
+    </delete>
+</mapper>

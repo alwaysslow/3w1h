@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.OrderDao">
+     <insert id="add" parameterType="order" >
+     	<selectKey keyProperty="order_id" resultType="int" order="BEFORE">
+     	select myseq.nextval from dual
+     	</selectKey>
+      insert into t_order values(#{order_id},sysdate,#{total_price},#{order_status1},#{address_id},#{user_id})
+     
+     </insert>
+    <resultMap type="order" id="myresultMap">
+    	<id property="order_id" column="ooid"/>
+    	<result property="total_price" column="otp"/>
+    	<result property="order_time" column="ootime"/>
+    	<result property="order_status1" column="oos"/>
+    	<collection property="itemdetails"  ofType="itemdetail">
+    		<id property="item_id" column="iid"/>
+    		<result property="item_count" column="iic" />
+    		<result property="item_price" column="iip"/>
+    		<association property="book" javaType="book">
+    			<id property="book_id" column="bbi"/>
+    			<result property="book_name" column="bbn"/>
+    			<result property="img" column="bi"/>
+    		</association>
+    	</collection>
+    
+    	
+    
+    </resultMap>
+    <select id="showAll" resultMap="myresultMap" parameterType="int">
+		select o.order_id ooid,o.order_time ootime,o.total_price otp ,o.order_status1 oos,
+		    	i.item_id iid,
+		    	i.item_count iic,i.item_price iip ,b.book_id bbi,b.book_name bbn,b.img bi
+		    	 from t_order o
+		inner join t_item i on  o.order_id=i.order_id
+		inner join b_book b on i.book_id=b.book_id where o.user_id=#{user_id}
+    </select>
+    
+    <delete id="delete" parameterType="int">
+    	delete t_order where order_id=#{id}
+    </delete>
+    <update id="update" parameterType="int">
+    	update t_order set order_status1=1 where order_id=#{id}
+    </update>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.CategoryDao" >
+ 	 <resultMap type="category" id="myresultMap1" >
+ 		<id property="category_id" column="bid"/>
+ 		<result property="category_name" column="bname"/>
+ 		<result property="category_count" column="bcount"/>
+ 		<collection property="categories" ofType="category">
+ 			<id property="category_id" column="cid"/>
+	 		<result property="category_name" column="cname"/>
+	 		<result property="category_count" column="ccount"/>
+	 	</collection>
+ 		
+ 	</resultMap>
+     <select id="selectAll" resultMap="myresultMap1">
+     	 select b.category_id bid,b.category_name bname,b.category_count bcount,
+      c.category_id cid,c.category_name cname,c.category_count ccount                                 
+ 		from b_category b inner join b_category c on b.category_id=c.father_id
+     </select>
+   <!--     根据一级类别id遍历出级别目录 -->
+     	<select id="selectFirstCategory" parameterType="int"  resultMap="myresultMap1">
+     		select b.category_id bid,b.category_name bname,b.category_count bcount,
+       c.category_id cid,c.category_name cname,c.category_count ccount                                 
+ 		from b_category b inner join b_category c on b.category_id=c.father_id 
+ 		where  b.category_id=#{0}
+     	</select>
+      <!-- 根据二级category_id 查找所有该一级的书籍目录 -->
+     <select id="selectSecondCategory" parameterType="int" resultMap="myresultMap1">
+     	select b.category_id bid,b.category_name bname,b.category_count bcount,
+      c.category_id cid,c.category_name cname,c.category_count ccount                                 
+ 		from b_category b inner join b_category c on b.category_id=c.father_id 
+ 		where  b.category_id=(select father_id from b_category d  where d.category_id=#{0})
+     </select>
+     <resultMap type="book" id="myresultmap2">
+     	<id column="book_id" property="book_id"/>
+     	<result column="book_name" property="book_name"/>
+     	<result column="author" property="author"/>
+     	<result column="press" property="press"/>
+     	<result column="up_date" property="up_date"/>
+     	<result column="description" property="description1"/>
+     	<result column="book_price" property="book_price"/>
+     	<result column="dang_price" property="dang_price"/>
+     	<result column="img" property="img"/>
+     </resultMap>
+     
+     <!-- 根据category_id 查找所有的二级种类下的书 -->
+    <select id="selectSecondBook" resultMap="myresultmap2">
+		select *from(
+		select c.category_id cid,c.category_name cname,c.category_count ccount,b.*,rownum r
+		from b_category c inner join b_book b on c.category_id=b.category_id where c.category_id=#{2})
+		 where r&gt;=#{0} and r&lt;=#{1} 
+	 </select>
+	<!--   根据category_id 查找所有的二级种类 以及该种类书 -->
+	  
+	 <select id="selectFirstBook" resultMap="myresultmap2">
+	 	select *from (
+		select b.category_id bid,b.category_name bname,b.category_count bcount,
+      	c.category_id cid,c.category_name cname,c.category_count ccount ,d.*,rownum r                                
+ 		from b_category b inner join b_category c on b.category_id=c.father_id inner join b_book d on d.category_id =c.category_id
+ 		where b.category_id=#{2})
+ 		where r&gt;=#{0} and r&lt;=#{1} 
+	 </select>
+	<!--   根据一级类别id查询总书籍书目 -->
+	  <select id="selectFirstCount" parameterType="int" resultType="int">
+	  	select count(*)                               
+ 		from b_category b inner join b_category c on b.category_id=c.father_id 
+ 		inner join b_book d on d.category_id =c.category_id where b.category_id=#{id}
+	  	
+	  </select>
+	  <!-- 根据二级类别id查询书籍总数目 -->
+	  <select id="selectSecondCount" parameterType="int" resultType="int">
+	  	select count(*)                              
+ 		from b_category b inner join b_book c on b.category_id=c.category_id 
+ 		where  b.category_id=#{id}
+	  </select>
+	 <!--  查询某一类别的父id -->
+	  <select id="SelectFatherId" parameterType="int" resultType="int">
+	  	 		
+       select father_id from b_category where category_id=#{id}
+	  </select>
+	  
+	  <select id="selectcategory_name" resultType="String" parameterType="int">
+	  	select category_name from b_category where category_id=#{id}
+	  </select>
+	 
+</mapper>

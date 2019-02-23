@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.BookDao">
+	<!-- 编辑推荐 -->
+     <select id="selectByEditor" resultType="book">
+     	select book_id,book_name,author,press,up_date,book_price,dang_price,img,description description1,book_salecount,r 
+     	from(select book_id,book_name,author,press,up_date,book_price,dang_price,img,description,book_salecount,rownum r
+		from (select *from b_book b order by book_salecount asc ) )  
+		where r&lt;=2
+     </select>
+     <!-- 热销 -->
+      <select id="selectByHotSell" resultType="book">
+     	select book_id,book_name,author,press,up_date,book_price,dang_price,img,description description1,book_salecount,r 
+     	from(select book_id,book_name,author,press,up_date,book_price,dang_price,img,description,book_salecount,rownum r
+		from (select *from b_book b order by book_salecount desc) )  
+		where r&lt;=4
+     </select>
+     <!-- 新品-->
+     <select id="selectByNewTime" resultType="book">
+     	select book_id,book_name,author,press,up_date,book_price,dang_price,img,description description1,book_salecount,r 
+     	from (select book_id,book_name,author,press,up_date,book_price,dang_price,img,description,book_salecount,rownum r
+		from  (select *from b_book b order by up_date desc) )  
+		where r&lt;=4
+     </select>
+     <!-- 新品热卖 -->
+     <select id="selectByHotNew" resultType="book">
+     select book_id,book_name,author,press,up_date,book_price,dang_price,img,description description1,book_salecount,r 
+     	from (select book_id,book_name,author,press,up_date,book_price,dang_price,img,description,book_salecount,rownum r
+		from  (select *from b_book b order by up_date desc,book_salecount desc ) )  
+		where r&lt;=8
+     </select> 
+     <!-- 书籍详细 -->
+     <select id="selectOne" parameterType="int" resultMap="myresult1">
+     	select  c.category_id cid,c.category_name cname ,b.*,d.category_id did ,d.category_name  dname
+	from b_book b inner join b_category c on b.category_id =c.category_id inner join b_category d on c.father_id=d.category_id
+	where b.book_id=#{id} 
+     </select>
+     <resultMap type="book" id="myresult1">
+     	<id property="book_id" column="book_id"/>
+     	<result property="book_name" column="book_name"/>
+     	<result property="book_price" column="book_price"/>
+     	<result property="dang_price" column="dang_price"/>
+     	<result property="img" column="img"/>
+     	<result property="press" column="press"/>
+     	<result property="author" column="author"/>
+     	<result property="up_date" column="up_date"/>
+     	<!-- 二级标题 -->
+     	<association property="category1" javaType="category">
+     		<id property="category_id" column="cid"/>
+     		<result property="category_name" column="cname"/>
+     	</association>
+     	<association property="category2" javaType="category">
+     		<id property="category_id" column="did"/>
+     		<result property="category_name" column="dname"/>
+     	</association>
+     </resultMap>
+</mapper>

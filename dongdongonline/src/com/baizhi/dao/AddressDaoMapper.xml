@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.AddressDao">
+	<select id="selectAll"  parameterType="int"  resultType="address">
+	select *from t_address where user_id=#{id}
+	</select>
+	<delete id="delete" parameterType="int">
+		delete  t_address where address_id=#{id}
+	</delete>
+	<insert id="add" parameterType="address">
+		insert into t_address values(myseq.nextval,#{address_name},#{address_address},#{address_phone},#{address_statue},#{user_id})
+	</insert>
+	
+	<update id="update1" parameterType="int">
+		update t_address  set address_statue = 1 where address_id=#{id}
+	</update>
+	<update id="update0" parameterType="int" >
+		update t_address  set address_statue = 0 where address_id!=#{id}
+	</update>
+	
+     
+</mapper>

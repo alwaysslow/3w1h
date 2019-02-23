@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="father" extends="struts-default">
+		<interceptors>
+			<interceptor name="my" class="com.baizhi.action.LoginInterceptor"></interceptor>
+			<interceptor-stack name="mystack">
+				<interceptor-ref name="my"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="mystack"></default-interceptor-ref>
+		<global-results> 
+			<result name="gotologin">/user/login_form.jsp</result>
+		</global-results>
+	</package>
+	
+	<package name="order" extends="father" namespace="/order" >
+		<action name="order_*" class="com.baizhi.action.OrderItemdetailAction" method="{1}">
+			<result name="addOk" type="dispatcher">/order/order_ok.jsp</result>
+			<result name="showAll">/order/my_order.jsp</result>
+			<result name="delete" type="redirectAction">order_showAll</result>
+			<result name="update" >/success.jsp</result>
+		</action>
+	</package>
+	<package name="address" extends="father" namespace="/address">
+		<action name="address_*" class="com.baizhi.action.AddressAction" method="{1}">
+			<result name="addresses">/address/my_address.jsp</result>
+			<result name="delete" type="redirectAction">address_selectAll</result>
+			<result name="add" type="redirectAction">address_selectAll</result>
+			<result name="update" type="redirectAction">address_selectAll</result>
+			<result name="addresses2">/order/address_form.jsp</result>
+		</action>
+	
+	</package>
+    <package name="cart" extends="struts-default" namespace="/cart">
+    	<action name="cart_*" class="com.baizhi.action.CartAction" method="{1}">
+    		<result name="addmap">/cart/cart_list.jsp</result>
+    		<result name="update">/cart/cart_list.jsp</result>
+    		<result name="remove">/cart/cart_list.jsp</result>
+    		<result name="recover">/cart/cart_list.jsp</result>
+    	</action>
+    </package>
+	<package name="user" extends="struts-default" namespace="/user">
+		<action name="user_*" class="com.baizhi.action.UserAction" method="{1}">
+			<result name="idntifycodeError">/user/login_form.jsp</result>
+			<result name="userError">/user/login_form.jsp</result>
+			<result name="unactive">/user/vertify_form.jsp</result>
+			<result name="loginOk" type="redirect">${url}</result>
+			<result name="exit">/main/main.jsp</result>
+			<result name="registeOk">/user/verify_form.jsp</result>
+			<result name="update">/user/register_ok.jsp</result>
+			
+		</action> 
+		<action name="captureAction" class="com.baizhi.action.CaptureAction" >
+			<result type="stream"></result>
+		</action>
+	</package>
+	<package name="category" extends="struts-default" namespace="/category">
+		<action name="category_*" class="com.baizhi.action.CategoryAction" method="{1}">
+			<result name="showAll">/main/category.jsp</result>
+			<result name="FirstCategory">/main/book_list.jsp</result>
+			<result name="secondCategory">/main/book_list.jsp</result>
+			
+			
+			
+		</action>
+	
+	</package>    
+	<package name="book" extends="struts-default" namespace="/book">
+		<action name="book_*" class="com.baizhi.action.BookAction" method="{1}" >
+			<result name="editor">/main/recommend.jsp</result>
+			<result name="hot">/main/hot.jsp</result>
+			<result name="new">/main/new.jsp</result>
+			<result name="hotnew">/main/hotBoard.jsp</result>
+			<result name="selectOne">/main/product.jsp</result>
+		
+		</action>
+	</package>
+	<!-- 
+		package:包，
+			corejava阶段使用包来管理类
+			Struts2使用包管理action
+		
+			name：包名，不能重复
+			extends：继承Struts2提供的父包struts-default
+	 -->
+	
+	<!-- 
+		action:配置action
+			name：1、action的名称；2、请求地址
+			class:action的全限定名
+	 -->
+		
+		<!-- 
+			result:配置结果视图
+				name的取值与execute方法的返回值一致
+				标签之间的内容跳转的真实路径
+				示例配置
+		 
+		
+	 <package name="manager" extends="struts-default" namespace="/manager">
+			 <action name="manager_*" class="com.baizhi.action.ManagerAction" method="{1}">
+				<result name="loginOk" type="redirectAction">
+							<param name="namespace">/employee</param>
+							<param name="actionName">employee_selectAll</param>
+				</result>
+				<result name="existusername" type="redirect">/login.jsp</result>
+				<result name="register" type="redirect">/regist.jsp</result>
+				<result name="registerOk" type="redirect">/login.jsp</result>
+				<result name="codeerror" type="redirect">/login.jsp</result>
+			</action>
+			<action name="captcha" class="com.baizhi.action.CaptchaAction">
+				<result type="stream" ></result>
+			</action>	
+			
+		</package>
+		<package name="employee" extends="struts-default" namespace="/employee">
+			<interceptors>
+				<interceptor name="my" class="com.baizhi.action.LoginInterceptor"></interceptor>
+				<interceptor-stack name="mystack">
+					<interceptor-ref name="my"></interceptor-ref>
+					<interceptor-ref name="defaultStack"></interceptor-ref>
+				</interceptor-stack>
+			</interceptors>
+			<default-interceptor-ref name="mystack"></default-interceptor-ref>
+			<global-results>
+				<result name="gotologin">/login.jsp</result>
+			</global-results>
+			<action name="employee_*" class="com.baizhi.action.EmployeeAction" method="{1}">
+				<result name="selectAll" type="dispatcher">/emplist.jsp</result>
+				<result name="addordeleteorupdate" type="redirectAction">employee_selectAll</result>
+				<result name="selectOne" >/updateEmp.jsp</result>
+			</action>
+		</package>
+		
+		-->
+		
+		
+</struts>
